@@ -1,0 +1,15 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.probe": [
+      "javascript",
+      "typescript",
+      "json"
+    ],
+    "eslint.validate": [
+      "javascript",
+      "typescript",
+      "json"
+    ],
+}
