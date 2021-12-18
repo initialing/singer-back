@@ -4,8 +4,11 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { MongooseModule } from "@nestjs/mongoose";
 import { join } from "path";
 import { ProfileModule } from "src/profile/profile.module";
+import { JWTStrategy } from "src/provides/jwt.strategy";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { JwtModule } from "@nestjs/jwt";
+import { PrivateConfig } from "config/private";
 
 @Module({
     imports: [
@@ -24,8 +27,14 @@ import { AppService } from "./app.service";
             autoSchemaFile: join(process.cwd(), "/src/schema.gql"),
             context: ({ req, res }) => ({ req, res }),
         }),
+        JwtModule.register({
+            signOptions: {
+                expiresIn: "600s",
+            },
+            secret: PrivateConfig.JWT_SECRET,
+        }),
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, JWTStrategy],
 })
 export class AppModule {}
