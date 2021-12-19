@@ -6,9 +6,13 @@ import { ProfileService } from "./profile.service";
 import { HmacMD5 } from "crypto-js";
 import { ResDes } from "src/enums/resdes.enum";
 import { Account } from "src/schemas/account.schema";
-import { NotFoundException } from "@nestjs/common";
+import { NotFoundException, UseGuards } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { JWT } from "src/utils/jwt";
+import { CurrentUser } from "src/decorators/currentUser";
+import { User } from "src/utils/user";
+import { JwtAuthGuard } from "src/provides/authGuard";
+import { PrivateConfig } from "config/private";
 
 @Resolver((of) => AccountModel)
 export class ProfileResolver {
@@ -32,7 +36,7 @@ export class ProfileResolver {
         }
         const JWTLoad: JWT = {
             userName: account,
-            expireTime: new Date().getTime() + 10000,
+            expireTime: new Date().getTime() + PrivateConfig.JWT_REFRESH_TIME,
         };
         const token = this.jwtService.sign(JWTLoad);
         ctx.res.header("access-token", token);
@@ -40,11 +44,18 @@ export class ProfileResolver {
     }
 
     @Mutation((returns) => CommonRes)
+    @UseGuards(JwtAuthGuard)
     async changePassword(
         @Args({ name: "account", type: () => String }) account: string,
         @Args({ name: "password", type: () => String }) password: string,
-        @Context() ctx
+        @CurrentUser() user: User
     ) {
+        if (user.userName != account) {
+            return new CommonRes(
+                ResCode.NOT_CURRENT_USER,
+                ResDes.NOT_CURRENT_USER
+            );
+        }
         const MD5Pass = HmacMD5(password, account).toString();
         const res = await this.profileService.changePassword(account, MD5Pass);
         if (res > 0) {

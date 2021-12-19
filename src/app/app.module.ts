@@ -29,7 +29,7 @@ import { PrivateConfig } from "config/private";
         }),
         JwtModule.register({
             signOptions: {
-                expiresIn: "600s",
+                expiresIn: PrivateConfig.JWT_EXPIRE_TIME,
             },
             secret: PrivateConfig.JWT_SECRET,
         }),

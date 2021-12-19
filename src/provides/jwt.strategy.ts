@@ -1,8 +1,7 @@
-import { Injectable, Res } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { PassportStrategy } from "@nestjs/passport";
 import { PrivateConfig } from "config/private";
-import { Response } from "express";
 
 @Injectable()
 export class JWTStrategy extends PassportStrategy(Strategy) {
@@ -14,8 +13,7 @@ export class JWTStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload, @Res() res: Response) {
-        console.log("resssss=>", res.getHeader);
-        return { userName: payload.userName };
+    async validate(payload) {
+        return { userName: payload.userName, expireTime: payload.expireTime };
     }
 }
