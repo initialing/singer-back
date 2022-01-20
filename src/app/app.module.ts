@@ -9,10 +9,12 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { JwtModule } from "@nestjs/jwt";
 import { PrivateConfig } from "config/private";
+import { MainModule } from "src/applications/main/main.module";
 
 @Module({
     imports: [
         ProfileModule,
+        MainModule,
         ConfigModule.forRoot({
             envFilePath: "./config/.development.env",
         }),

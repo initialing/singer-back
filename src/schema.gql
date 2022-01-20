@@ -20,5 +20,7 @@ type Mutation {
 }
 
 type Query {
+  getHistorySameDate: CommonRes!
+  getMain: CommonRes!
   login(account: String!, password: String!): AccountModel!
 }
