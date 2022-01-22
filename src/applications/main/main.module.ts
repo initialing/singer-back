@@ -1,9 +1,17 @@
 import { Module } from "@nestjs/common";
-// import { JWTStrategy } from "src/provides/jwt.strategy";
+import { JwtModule } from "@nestjs/jwt";
+import { PrivateConfig } from "config/private";
 import { MainResolver } from "./main.resolver";
 
 @Module({
-    imports: [],
+    imports: [
+        JwtModule.register({
+            signOptions: {
+                expiresIn: PrivateConfig.JWT_EXPIRE_TIME,
+            },
+            secret: PrivateConfig.JWT_SECRET,
+        }),
+    ],
     providers: [MainResolver],
     controllers: [],
 })
