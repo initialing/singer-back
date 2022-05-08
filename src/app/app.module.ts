@@ -10,11 +10,13 @@ import { AppService } from "./app.service";
 import { JwtModule } from "@nestjs/jwt";
 import { PrivateConfig } from "config/private";
 import { MainModule } from "src/applications/main/main.module";
+import { EditModule } from "src/applications/edit/edit.module";
 
 @Module({
     imports: [
         ProfileModule,
         MainModule,
+        EditModule,
         ConfigModule.forRoot({
             envFilePath: "./config/.development.env",
         }),

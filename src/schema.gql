@@ -15,11 +15,19 @@ type CommonRes {
   describe: String!
 }
 
+"""country"""
+type CountryModel {
+  _id: String!
+  name: String!
+}
+
 type Mutation {
+  addCountry(name: String!): CountryModel!
   changePassword(account: String!, password: String!): CommonRes!
 }
 
 type Query {
+  getCountry: CountryModel!
   getHistorySameDate: CommonRes!
   getMain: CommonRes!
   login(account: String!, password: String!): AccountModel!
