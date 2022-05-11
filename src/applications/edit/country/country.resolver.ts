@@ -1,8 +1,10 @@
 import { UseGuards } from "@nestjs/common";
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, ObjectType, Query, Resolver } from "@nestjs/graphql";
 import { CurrentUser } from "src/decorators/currentUser";
 import { CountryDTO } from "src/dtos/edit/country.dto";
 import { CountryModel } from "src/model/edit/country.model";
+import { PageCountry } from "src/model/edit/country.model";
+import { PaginationModel } from "src/model/page.model";
 import { JwtAuthGuard } from "src/provides/authGuard";
 import { Country } from "src/schemas/edit/country.schema";
 import { CommonRes } from "src/utils/commonRes";
@@ -12,10 +14,25 @@ import { CountryService } from "./country.service";
 @Resolver((of) => CountryModel)
 export class CountryResolver {
     constructor(private readonly countryService: CountryService) {}
-    @Query((returns) => CountryModel)
+
+    @Query((returns) => PageCountry)
     @UseGuards(JwtAuthGuard)
-    async getCountry() {
-        const res: Country[] = await this.countryService.queryCountry();
+    async getCountry(
+        @Args({ name: "page", type: () => Number, defaultValue: 1 })
+        page: number,
+        @Args({ name: "size", type: () => Number, defaultValue: 10 })
+        size: number
+    ) {
+        const data: Country[] = await this.countryService.queryCountry(
+            page,
+            size
+        );
+        const totalCount: number =
+            await this.countryService.queryCountryCount();
+        const res = {
+            totalCount,
+            data,
+        };
         return res;
     }
 

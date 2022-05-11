@@ -15,15 +15,24 @@ export class CountryService {
         return createCountry.save();
     }
 
-    async queryCountry(): Promise<Country[]> {
-        const countries: Country[] = await this.countryModel.find(
-            {},
-            {
-                _id: 1,
-                name: 1,
-            }
-        );
+    async queryCountry(page: number, size: number): Promise<Country[]> {
+        const countries: Country[] = await this.countryModel
+            .find(
+                {},
+                {
+                    _id: 1,
+                    name: 1,
+                }
+            )
+            .skip((page - 1) * size)
+            .limit(size);
 
         return countries;
+    }
+
+    async queryCountryCount(): Promise<number> {
+        const count: number = await this.countryModel.find().count();
+
+        return count;
     }
 }

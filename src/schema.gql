@@ -26,8 +26,13 @@ type Mutation {
   changePassword(account: String!, password: String!): CommonRes!
 }
 
+type PageCountry {
+  data: [CountryModel!]!
+  totalCount: Int!
+}
+
 type Query {
-  getCountry: CountryModel!
+  getCountry(page: Float = 1, size: Float = 10): PageCountry!
   getHistorySameDate: CommonRes!
   getMain: CommonRes!
   login(account: String!, password: String!): AccountModel!
