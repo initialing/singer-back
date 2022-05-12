@@ -1,8 +1,9 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { NormalModel } from "../normal.model";
 import { PaginationModel } from "../page.model";
 
 @ObjectType({ description: "country" })
-export class CountryModel {
+export class CountryModel extends NormalModel {
     @Field((type) => String)
     _id: string;
 

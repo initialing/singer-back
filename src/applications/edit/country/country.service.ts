@@ -17,13 +17,7 @@ export class CountryService {
 
     async queryCountry(page: number, size: number): Promise<Country[]> {
         const countries: Country[] = await this.countryModel
-            .find(
-                {},
-                {
-                    _id: 1,
-                    name: 1,
-                }
-            )
+            .find({})
             .skip((page - 1) * size)
             .limit(size);
 

@@ -38,9 +38,14 @@ export class CountryResolver {
 
     @Mutation((returns) => CountryModel)
     @UseGuards(JwtAuthGuard)
-    async addCountry(@Args({ name: "name", type: () => String }) name: string) {
+    async addCountry(
+        @Args({ name: "name", type: () => String }) name: string,
+        @CurrentUser() user: User
+    ) {
         const country: CountryDTO = {
             name: name,
+            createUser: user.id,
+            createTime: new Date(),
         };
         const result = await this.countryService.addCountry(country);
         return result;

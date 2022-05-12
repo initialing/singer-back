@@ -35,6 +35,7 @@ export class ProfileResolver {
             throw new NotFoundException(account);
         }
         const JWTLoad: JWT = {
+            id: res._id,
             userName: account,
             expireTime: new Date().getTime() + PrivateConfig.JWT_REFRESH_TIME,
         };

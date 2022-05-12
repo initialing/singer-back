@@ -20,6 +20,7 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
         if (user.expireTime <= new Date().getTime()) {
             const token = this.jwtService.sign(
                 {
+                    id: user.id,
                     userName: user.account,
                     expireTime:
                         new Date().getTime() + PrivateConfig.JWT_REFRESH_TIME,
