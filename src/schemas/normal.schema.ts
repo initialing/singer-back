@@ -14,6 +14,9 @@ export class Normal extends mongoose.Document {
 
     @Prop({ type: mongoose.Schema.Types.Date })
     updateTime: Date;
+
+    @Prop({ type: Boolean, default: false })
+    isDeleted: boolean;
 }
 
 export type NormalDocument = Normal & mongoose.Document;

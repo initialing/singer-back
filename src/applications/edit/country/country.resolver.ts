@@ -1,5 +1,13 @@
 import { UseGuards } from "@nestjs/common";
-import { Args, Mutation, ObjectType, Query, Resolver } from "@nestjs/graphql";
+import {
+    Args,
+    ID,
+    Int,
+    Mutation,
+    ObjectType,
+    Query,
+    Resolver,
+} from "@nestjs/graphql";
 import { CurrentUser } from "src/decorators/currentUser";
 import { CountryDTO } from "src/dtos/edit/country.dto";
 import { CountryModel } from "src/model/edit/country.model";
@@ -18,17 +26,21 @@ export class CountryResolver {
     @Query((returns) => PageCountry)
     @UseGuards(JwtAuthGuard)
     async getCountry(
-        @Args({ name: "page", type: () => Number, defaultValue: 1 })
+        @Args({ name: "page", type: () => Int, defaultValue: 1 })
         page: number,
-        @Args({ name: "size", type: () => Number, defaultValue: 10 })
-        size: number
+        @Args({ name: "size", type: () => Int, defaultValue: 10 })
+        size: number,
+        @Args({ name: "name", type: () => String, nullable: true })
+        name?: string
     ) {
         const data: Country[] = await this.countryService.queryCountry(
             page,
-            size
+            size,
+            name
         );
-        const totalCount: number =
-            await this.countryService.queryCountryCount();
+        const totalCount: number = await this.countryService.queryCountryCount(
+            name
+        );
         const res = {
             totalCount,
             data,
@@ -48,6 +60,22 @@ export class CountryResolver {
             createTime: new Date(),
         };
         const result = await this.countryService.addCountry(country);
+        return result;
+    }
+
+    @Mutation((returns) => CountryModel)
+    @UseGuards(JwtAuthGuard)
+    async editCountry(
+        @Args({ name: "id", type: () => String }) id: string,
+        @Args({ name: "name", type: () => String }) name: string,
+        @CurrentUser() user: User
+    ) {
+        const country: CountryDTO = {
+            name: name,
+            updateUser: user.id,
+            updateTime: new Date(),
+        };
+        const result = await this.countryService.editCountry(id, country);
         return result;
     }
 }

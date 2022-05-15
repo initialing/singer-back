@@ -15,17 +15,42 @@ export class CountryService {
         return createCountry.save();
     }
 
-    async queryCountry(page: number, size: number): Promise<Country[]> {
+    async editCountry(id: string, country: CountryDTO): Promise<Country> {
+        const editCountry = await this.countryModel.findByIdAndUpdate(
+            id,
+            country
+        );
+        Object.assign(editCountry, country);
+        return editCountry;
+    }
+
+    async queryCountry(
+        page: number,
+        size: number,
+        name?: string
+    ): Promise<Country[]> {
+        const query: any = {
+            isDeleted: false,
+        };
+        if (name) {
+            query.name = { $regex: name };
+        }
         const countries: Country[] = await this.countryModel
-            .find({})
+            .find(query)
             .skip((page - 1) * size)
             .limit(size);
 
         return countries;
     }
 
-    async queryCountryCount(): Promise<number> {
-        const count: number = await this.countryModel.find().count();
+    async queryCountryCount(name?: string): Promise<number> {
+        const query: any = {
+            isDeleted: false,
+        };
+        if (name) {
+            query.name = { $regex: name };
+        }
+        const count: number = await this.countryModel.find(query).count();
 
         return count;
     }

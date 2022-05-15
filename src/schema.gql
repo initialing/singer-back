@@ -20,6 +20,7 @@ type CountryModel {
   _id: String!
   createTime: DateTime!
   createUser: String!
+  isDeleted: Boolean!
   name: String!
   updateTime: DateTime
   updateUser: String
@@ -33,6 +34,7 @@ scalar DateTime
 type Mutation {
   addCountry(name: String!): CountryModel!
   changePassword(account: String!, password: String!): CommonRes!
+  editCountry(id: String!, name: String!): CountryModel!
 }
 
 type PageCountry {
@@ -41,7 +43,7 @@ type PageCountry {
 }
 
 type Query {
-  getCountry(page: Float = 1, size: Float = 10): PageCountry!
+  getCountry(name: String, page: Int = 1, size: Int = 10): PageCountry!
   getHistorySameDate: CommonRes!
   getMain: CommonRes!
   login(account: String!, password: String!): AccountModel!

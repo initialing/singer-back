@@ -6,4 +6,6 @@ export class NormalDTO {
     updateUser?: string;
 
     updateTime?: Date;
+
+    isDeleted?: boolean;
 }

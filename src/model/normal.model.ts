@@ -13,4 +13,7 @@ export class NormalModel {
 
     @Field({ nullable: true })
     updateTime: Date;
+
+    @Field({ nullable: false })
+    isDeleted: boolean;
 }
