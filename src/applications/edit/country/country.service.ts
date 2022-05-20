@@ -54,4 +54,11 @@ export class CountryService {
 
         return count;
     }
+
+    async getCountryList(name: string): Promise<Country[]> {
+        const countries: Country[] = await this.countryModel.find({
+            name: { $regex: name },
+        });
+        return countries;
+    }
 }

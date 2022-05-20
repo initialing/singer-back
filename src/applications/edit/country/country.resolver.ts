@@ -78,4 +78,15 @@ export class CountryResolver {
         const result = await this.countryService.editCountry(id, country);
         return result;
     }
+
+    @Query((returns) => [CountryModel])
+    @UseGuards(JwtAuthGuard)
+    async getCountryList(
+        @Args({ name: "name" }) name: string,
+        @CurrentUser() user: User
+    ) {
+        if (!name) return [];
+        const data: Country[] = await this.countryService.getCountryList(name);
+        return data;
+    }
 }

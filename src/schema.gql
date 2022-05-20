@@ -9,6 +9,43 @@ type AccountModel {
   password: String!
 }
 
+"""Artist"""
+type Artist {
+  _id: String!
+  activeTime: [[DateTime!]!]
+  birthday: DateTime
+  country: CountryModel
+  countryId: String!
+  createTime: DateTime!
+  createUser: String!
+  deadTime: DateTime
+  isDeleted: Boolean!
+  member: [String!]
+  memberDetail: [Artist!]
+  name: String!
+  sex: Float
+  type: Float!
+  updateTime: DateTime
+  updateUser: String
+}
+
+"""ArtistInputModel"""
+input ArtistInputModel {
+  activeTime: [[DateTime]]
+  birthday: DateTime
+  countryId: String!
+  createTime: DateTime
+  createUser: String
+  deadTime: DateTime
+  isDeleted: Boolean
+  member: [String!]
+  name: String!
+  sex: Int
+  type: Float!
+  updateTime: DateTime
+  updateUser: String
+}
+
 """CommonRes"""
 type CommonRes {
   code: Float!
@@ -32,6 +69,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
+  addArtist(artist: ArtistInputModel!): Artist!
   addCountry(name: String!): CountryModel!
   changePassword(account: String!, password: String!): CommonRes!
   editCountry(id: String!, name: String!): CountryModel!
@@ -43,7 +81,9 @@ type PageCountry {
 }
 
 type Query {
+  getArtistById(id: String!): Artist!
   getCountry(name: String, page: Int = 1, size: Int = 10): PageCountry!
+  getCountryList(name: String!): [CountryModel!]!
   getHistorySameDate: CommonRes!
   getMain: CommonRes!
   login(account: String!, password: String!): AccountModel!
