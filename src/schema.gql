@@ -12,7 +12,7 @@ type AccountModel {
 """Artist"""
 type Artist {
   _id: String!
-  activeTime: [[DateTime!]!]
+  activeTime: [[DateTime]]
   birthday: DateTime
   country: CountryModel
   countryId: String!
@@ -75,13 +75,18 @@ type Mutation {
   editCountry(id: String!, name: String!): CountryModel!
 }
 
+type PageArtist {
+  data: [Artist!]!
+  totalCount: Int!
+}
+
 type PageCountry {
   data: [CountryModel!]!
   totalCount: Int!
 }
 
 type Query {
-  getArtistById(id: String!): Artist!
+  getArtist(name: String, page: Int!, size: Int!): PageArtist!
   getCountry(name: String, page: Int = 1, size: Int = 10): PageCountry!
   getCountryList(name: String!): [CountryModel!]!
   getHistorySameDate: CommonRes!

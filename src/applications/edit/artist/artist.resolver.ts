@@ -1,9 +1,9 @@
 import { UseGuards } from "@nestjs/common";
-import { Args, ID, Mutation, Resolver, Query } from "@nestjs/graphql";
+import { Args, ID, Mutation, Resolver, Query, Int } from "@nestjs/graphql";
 import { CurrentUser } from "src/decorators/currentUser";
 import { ArtistDTO } from "src/dtos/edit/artist.dto";
 import { ArtistInputModel } from "src/imputModel/edit/artistInput.model";
-import { ArtistModel } from "src/model/edit/artist.model";
+import { ArtistModel, PageArtist } from "src/model/edit/artist.model";
 import { JwtAuthGuard } from "src/provides/authGuard";
 import { User } from "src/utils/user";
 import { ArtistService } from "./artist.service";
@@ -25,13 +25,21 @@ export class ArtistResolver {
         return res;
     }
 
-    @Query((returns) => ArtistModel)
+    @Query((returns) => PageArtist)
     @UseGuards(JwtAuthGuard)
-    async getArtistById(
-        @Args({ name: "id" }) id: string,
-        @CurrentUser() user: User
+    async getArtist(
+        @Args({ name: "page", type: () => Int }) page: number,
+        @Args({ name: "size", type: () => Int }) size: number,
+        @Args({ name: "name", type: () => String, nullable: true })
+        name?: string
     ) {
-        const res = this.artistService.getArtistById(id);
+        const data = await this.artistService.getArtist(page, size, name);
+        console.log(data);
+        const totalCount = await this.artistService.getArtistCount(name);
+        const res = {
+            data,
+            totalCount,
+        };
         return res;
     }
 }

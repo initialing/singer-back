@@ -29,7 +29,7 @@ export class ArtistModel extends NormalModel {
     @Field({ nullable: false })
     type: 1 | 2;
 
-    @Field((type) => [[Date]], { nullable: true })
+    @Field((type) => [[Date]], { nullable: "itemsAndList" })
     activeTime?: Date[][];
 
     @Field((type) => [String], { nullable: true })

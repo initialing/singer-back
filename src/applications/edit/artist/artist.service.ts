@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model } from "mongoose";
 import { ArtistDTO } from "src/dtos/edit/artist.dto";
 import { ArtistModel } from "src/model/edit/artist.model";
 import { Artist, ArtistDoc } from "src/schemas/edit/artist.schema";
@@ -14,12 +14,20 @@ export class ArtistService {
         return createArtist.save();
     }
 
-    async getArtistById(id: string): Promise<ArtistModel> {
+    async getArtist(
+        page: number,
+        size: number,
+        name?: string
+    ): Promise<ArtistModel[]> {
+        const query: any = {
+            isDeleted: false,
+        };
+        if (name) {
+            query.name = { $regex: name };
+        }
         const where = [
             {
-                $match: {
-                    _id: new Types.ObjectId(id),
-                },
+                $match: query,
             },
             {
                 $lookup: {
@@ -54,8 +62,25 @@ export class ArtistService {
                     countries: 0,
                 },
             },
+            {
+                $skip: (page - 1) * size,
+            },
+            {
+                $limit: size,
+            },
         ];
         const res = await this.ArtistModel.aggregate(where);
-        return res[0];
+        return res;
+    }
+
+    async getArtistCount(name?: string): Promise<number> {
+        const where: any = {
+            isDeleted: false,
+        };
+        if (name) {
+            where.name = { $regex: name };
+        }
+        const res = await this.ArtistModel.find(where).count();
+        return res;
     }
 }
